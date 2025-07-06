@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import os
 from requests.auth import HTTPBasicAuth
 import pandas as pd
+import argparse
+import sys
 
 load_dotenv()
 
@@ -443,27 +445,65 @@ class ExcelToRemiks:
 
 
 if __name__ == "__main__":
+    # Kreiranje argument parser-a
+    parser = argparse.ArgumentParser(description='Excel to Remiks Sync Script')
+    parser.add_argument('--file', '-f', type=str, help='Putanja do Excel fajla')
+    parser.add_argument('--sync', '-s', action='store_true', help='Pokreni sinhronizaciju direktno')
+    parser.add_argument('--analyze', '-a', action='store_true', help='Analiziraj Excel fajl')
+
+    args = parser.parse_args()
+
     # Kreiranje sync objekta
     sync = ExcelToRemiks()
 
-    # Menu opcija
-    print("=== EXCEL TO REMIKS SYNC ===")
-    print("1. Analiziraj Excel fajl")
-    print("2. Pokreni sinhronizaciju iz Excel fajla")
-    print("3. Exit")
+    # Ako su prosledeni argumenti
+    if args.file or args.sync or args.analyze:
+        excel_file = args.file
 
-    choice = input("\nIzaberite opciju (1-3): ").strip()
+        # Ako nije specificiran fajl, pokušava sa default putanjom
+        if not excel_file:
+            default_path = os.path.join('podaci', 'podaci.xlsx')
+            if os.path.exists(default_path):
+                excel_file = default_path
+                print(f"Koristi se default fajl: {excel_file}")
+            else:
+                print(f"Default fajl {default_path} nije pronađen")
+                sys.exit(1)
 
-    if choice == "1":
-        # Analiza Excel fajla - automatski traži u podaci folderu
-        sync.analyze_excel_file()
+        # Proverava da li fajl postoji
+        if not os.path.exists(excel_file):
+            print(f"Fajl nije pronađen: {excel_file}")
+            sys.exit(1)
 
-    elif choice == "2":
-        # Sinhronizacija iz Excel fajla - automatski traži u podaci folderu
-        sync.run_sync()
-
-    elif choice == "3":
-        print("Izlaz...")
-
+        if args.sync:
+            print(f"Pokretanje sinhronizacije sa fajlom: {excel_file}")
+            sync.run_sync(excel_file)
+        elif args.analyze:
+            print(f"Analiza fajla: {excel_file}")
+            sync.analyze_excel_file(excel_file)
+        else:
+            # Ako je samo specificiran fajl bez akcije, pokreni sync
+            print(f"Pokretanje sinhronizacije sa fajlom: {excel_file}")
+            sync.run_sync(excel_file)
     else:
-        print("Nevalidna opcija. Izlaz...")
+        # Interaktivni meni ako nema argumenata
+        print("=== EXCEL TO REMIKS SYNC ===")
+        print("1. Analiziraj Excel fajl")
+        print("2. Pokreni sinhronizaciju iz Excel fajla")
+        print("3. Exit")
+
+        choice = input("\nIzaberite opciju (1-3): ").strip()
+
+        if choice == "1":
+            # Analiza Excel fajla - automatski traži u podaci folderu
+            sync.analyze_excel_file()
+
+        elif choice == "2":
+            # Sinhronizacija iz Excel fajla - automatski traži u podaci folderu
+            sync.run_sync()
+
+        elif choice == "3":
+            print("Izlaz...")
+
+        else:
+            print("Nevalidna opcija. Izlaz...")
