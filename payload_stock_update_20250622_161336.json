@@ -1,0 +1,761 @@
+[
+    {
+        "sku": "B4287RG",
+        "stock": {
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 7
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 7
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2395.0,
+        "sale_price": 2395.0,
+        "invoice_price": 1636.51787
+    },
+    {
+        "sku": "B4318RG",
+        "stock": {
+            "12m": {
+                "10-GLAVNI MAGACIN": 7
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 7
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "B4320RG",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 4790.0,
+        "sale_price": 4790.0,
+        "invoice_price": 3273.03574
+    },
+    {
+        "sku": "B4326RG7",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 6390.0,
+        "sale_price": 6390.0,
+        "invoice_price": 4366.32534
+    },
+    {
+        "sku": "B4356RG",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 12
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5190.0,
+        "sale_price": 5190.0,
+        "invoice_price": 3546.35814
+    },
+    {
+        "sku": "B4359RG",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 3
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5690.0,
+        "sale_price": 5690.0,
+        "invoice_price": 3888.0111399999996
+    },
+    {
+        "sku": "B4439RG",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 7
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 12
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2845.0,
+        "sale_price": 2845.0,
+        "invoice_price": 1944.0055699999998
+    },
+    {
+        "sku": "B4440RG",
+        "stock": {
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2495.0,
+        "sale_price": 2495.0,
+        "invoice_price": 1704.8484700000001
+    },
+    {
+        "sku": "B4615RG",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5690.0,
+        "sale_price": 5690.0,
+        "invoice_price": 3888.0111399999996
+    },
+    {
+        "sku": "B4840RG7",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 4790.0,
+        "sale_price": 4790.0,
+        "invoice_price": 3273.03574
+    },
+    {
+        "sku": "B4849RG7",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5690.0,
+        "sale_price": 5690.0,
+        "invoice_price": 3888.0111399999996
+    },
+    {
+        "sku": "B4853RG7",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5690.0,
+        "sale_price": 5690.0,
+        "invoice_price": 3888.0111399999996
+    },
+    {
+        "sku": "B9091RB4",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 5
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 5
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 3
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 3834.0,
+        "sale_price": 3834.0,
+        "invoice_price": 2619.795204
+    },
+    {
+        "sku": "B9093RB4",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5390.0,
+        "sale_price": 5390.0,
+        "invoice_price": 3683.01934
+    },
+    {
+        "sku": "B9693RB",
+        "stock": {
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 7
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2395.0,
+        "sale_price": 2395.0,
+        "invoice_price": 1636.51787
+    },
+    {
+        "sku": "B9723RB",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 1
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 3
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5090.0,
+        "sale_price": 5090.0,
+        "invoice_price": 3478.02754
+    },
+    {
+        "sku": "B9799RB",
+        "stock": {
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2694.0,
+        "sale_price": 2694.0,
+        "invoice_price": 1840.826364
+    },
+    {
+        "sku": "C4639RG",
+        "stock": {
+            "7": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "8": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5190.0,
+        "sale_price": 5190.0,
+        "invoice_price": 3546.35814
+    },
+    {
+        "sku": "C9869RB",
+        "stock": {
+            "3m": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "6m": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "9m": {
+                "10-GLAVNI MAGACIN": 3
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "C9870RB",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2395.0,
+        "sale_price": 2395.0,
+        "invoice_price": 1636.51787
+    },
+    {
+        "sku": "E9077RB4",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 1434.0,
+        "sale_price": 1434.0,
+        "invoice_price": 979.8608039999999
+    },
+    {
+        "sku": "E9078RB4",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 1434.0,
+        "sale_price": 1434.0,
+        "invoice_price": 979.8608039999999
+    },
+    {
+        "sku": "H9915RB",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 3
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 1690.0,
+        "sale_price": 1690.0,
+        "invoice_price": 1154.78714
+    },
+    {
+        "sku": "OBRB1061TK",
+        "stock": {
+            "8": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "10": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "12": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "14": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 6390.0,
+        "sale_price": 6390.0,
+        "invoice_price": 4366.32534
+    },
+    {
+        "sku": "OCRB1061TK",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 1
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 3834.0,
+        "sale_price": 3834.0,
+        "invoice_price": 2619.795204
+    },
+    {
+        "sku": "OCRB1067TK",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 6
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 5290.0,
+        "sale_price": 5290.0,
+        "invoice_price": 3614.68874
+    },
+    {
+        "sku": "S9038RB4",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 2
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 1745.0,
+        "sale_price": 1745.0,
+        "invoice_price": 1192.36897
+    },
+    {
+        "sku": "S9938RB4",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 3
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 1745.0,
+        "sale_price": 1745.0,
+        "invoice_price": 1192.36897
+    },
+    {
+        "sku": "S9939RB",
+        "stock": {
+            "4": {
+                "10-GLAVNI MAGACIN": 3
+            },
+            "5": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "6": {
+                "10-GLAVNI MAGACIN": 2
+            },
+            "7": {
+                "10-GLAVNI MAGACIN": 3
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 1745.0,
+        "sale_price": 1745.0,
+        "invoice_price": 1192.36897
+    },
+    {
+        "sku": "U4272RG",
+        "stock": {
+            "3m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "6m": {
+                "10-GLAVNI MAGACIN": 6
+            },
+            "9m": {
+                "10-GLAVNI MAGACIN": 7
+            },
+            "12m": {
+                "10-GLAVNI MAGACIN": 7
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 9
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "U4275RG",
+        "stock": {
+            "3m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "6m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "9m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "U4278RG",
+        "stock": {
+            "3m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "6m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "9m": {
+                "10-GLAVNI MAGACIN": 9
+            },
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 7
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "U4279RG",
+        "stock": {
+            "3m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "6m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "9m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "U9678RB",
+        "stock": {
+            "3m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "6m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "9m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "U9853RB",
+        "stock": {
+            "3m": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "6m": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "9m": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "U9855RB",
+        "stock": {
+            "12m": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 4
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 4
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    },
+    {
+        "sku": "U9857RB",
+        "stock": {
+            "12m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "18m": {
+                "10-GLAVNI MAGACIN": 8
+            },
+            "24m": {
+                "10-GLAVNI MAGACIN": 8
+            }
+        },
+        "type": "configurable",
+        "net_retail_price": 2245.0,
+        "sale_price": 2245.0,
+        "invoice_price": 1534.02197
+    }
+]
