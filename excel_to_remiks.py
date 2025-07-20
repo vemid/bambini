@@ -21,15 +21,15 @@ class ExcelToRemiks:
         self.remiks_url_product = os.getenv('remiks_url_product')
 
     def read_excel_file(self, excel_file_path):
-        """Čita Excel fajl i vraća DataFrame"""
+        """Čita Excel fajl i vraća DataFrame - koristi samo sheet UPISATI"""
         try:
-            # Pokušava sa prvim sheet-om
-            df = pd.read_excel(excel_file_path, sheet_name=0)
-            print(f"Učitano {len(df)} redova iz Excel fajla")
+            # Eksplicitno čita sheet "UPISATI"
+            df = pd.read_excel(excel_file_path, sheet_name="UPISATI")
+            print(f"Učitano {len(df)} redova iz sheet-a 'UPISATI'")
             print(f"Kolone: {list(df.columns)}")
             return df
         except Exception as e:
-            print(f"Greška pri čitanju Excel fajla: {e}")
+            print(f"Greška pri čitanju Excel fajla (sheet UPISATI): {e}")
             return None
 
     def map_gender_from_category(self, category):
@@ -89,7 +89,92 @@ class ExcelToRemiks:
         print(f"Debug - kategorija nije prepoznata, koristi se OSTALO")
         return 'OSTALO'  # Default kategorija
 
-    def map_category_to_code(self, category_name, gender):
+    def is_predefined_category_code(self, category_value):
+        """Proverava da li je kategorija već definisana numerička šifra"""
+        try:
+            # Konvertuje u string i čisti whitespace
+            category_str = str(category_value).strip()
+
+            # Proverava da li je numerička vrednost (šifra)
+            if category_str.isdigit() and len(category_str) == 4:
+                # Proverava da li je u validnom opsegu šifara
+                code = int(category_str)
+                if (1000 <= code <= 1999) or (2000 <= code <= 2999) or (3000 <= code <= 3999):
+                    print(f"Debug - prepoznata predefinisana šifra kategorije: {category_str}")
+                    return True
+            return False
+        except:
+            return False
+
+    def get_category_code(self, category_value, product_name):
+        """Dobija kod kategorije - prvo proverava da li je već definisan, zatim mapira"""
+
+        # Prvo proverava da li je već numerička šifra
+        if self.is_predefined_category_code(category_value):
+            category_code = str(category_value).strip()
+
+            # Izvlači pol iz šifre
+            first_digit = int(category_code[0])
+            if first_digit == 1:
+                gender = 'M'
+            elif first_digit == 2:
+                gender = 'F'
+            elif first_digit == 3:
+                gender = 'U'
+            else:
+                gender = 'U'  # Default
+
+            # Pokušava da mapira šifru na naziv kategorije
+            category_name = self.map_code_to_category_name(category_code)
+
+            print(f"Debug - koristi predefinisanu šifru: {category_code}, pol: {gender}, naziv: {category_name}")
+            return category_code, gender, category_name
+
+        # Ako nije predefinisana šifra, koristi postojeću logiku
+        else:
+            gender = self.map_gender_from_category(category_value)
+            product_category = self.map_product_category(category_value, product_name)
+            category_code = self.map_category_to_code(product_category, gender)
+
+            print(
+                f"Debug - mapirana kategorija: {category_value} -> {category_code}, pol: {gender}, naziv: {product_category}")
+            return category_code, gender, product_category
+
+    def map_code_to_category_name(self, category_code):
+        """Mapira numeričku šifru nazad u naziv kategorije"""
+        code_mapping = {
+            # Muške kategorije (1xxx)
+            '1001': 'TRENERKE',
+            '1002': 'DUKSEVI',
+            '1003': 'MAJICE',
+            '1004': 'ŠORCEVI',
+            '1005': 'PANTALONE',
+            '1006': 'JAKNE',
+            '1007': 'SETOVI',
+            '1099': 'OSTALO',
+
+            # Ženske kategorije (2xxx)
+            '2001': 'TRENERKE',
+            '2002': 'DUKSEVI',
+            '2003': 'MAJICE',
+            '2004': 'ŠORCEVI',
+            '2005': 'PANTALONE',
+            '2006': 'JAKNE',
+            '2007': 'SETOVI',
+            '2099': 'TORBE',
+
+            # Unisex kategorije (3xxx)
+            '3001': 'TRENERKE',
+            '3002': 'DUKSEVI',
+            '3003': 'MAJICE',
+            '3004': 'ŠORCEVI',
+            '3005': 'PANTALONE',
+            '3006': 'JAKNE',
+            '3007': 'SETOVI',
+            '3099': 'OSTALO'
+        }
+
+        return code_mapping.get(category_code, 'OSTALO')
         """Mapira kategoriju i pol u numerički kod - ista logika kao u originalnoj skripti"""
         category_mapping = {
             # Muške kategorije (1xxx)
@@ -112,7 +197,7 @@ class ExcelToRemiks:
                 'PANTALONE': '2005',
                 'JAKNE': '2006',
                 'SETOVI': '2007',
-                'OSTALO': '2099'
+                'TORBE': '2099'
             },
             # Unisex kategorije (3xxx)
             'U': {
@@ -142,10 +227,10 @@ class ExcelToRemiks:
         name_upper = product_name.upper() if product_name else ""
 
         brand_patterns = [
-            'JACK & JONES',
+            'Jack & Jones Junior',
             'REEBOK',
             'MESSI',
-            'VINGINO'
+            'CAVALLI Class'
         ]
 
         for brand in brand_patterns:
@@ -156,56 +241,128 @@ class ExcelToRemiks:
         print(f"Debug - brend nije pronađen, koristi se GENERIC")
         return 'GENERIC'
 
+    def safe_get_value(self, row, column_name, default_value=''):
+        """Sigurno dohvata vrednost iz reda, vraća default ako kolona ne postoji"""
+        try:
+            if column_name in row.index:
+                value = row.get(column_name, default_value)
+                return value if pd.notna(value) else default_value
+            else:
+                return default_value
+        except:
+            return default_value
+
+    def parse_packing_time(self, packing_time, packing_time_type):
+        """Parsira vreme pakovanja u standardni format"""
+        try:
+            time_value = float(packing_time) if packing_time and pd.notna(packing_time) else 2
+            time_type = str(packing_time_type).lower() if packing_time_type and pd.notna(packing_time_type) else 'dan'
+
+            # Standardizuje tip vremena
+            if time_type in ['dan', 'day', 'dani', 'days']:
+                return f"{int(time_value)} dan{'a' if time_value > 1 else ''}"
+            elif time_type in ['sat', 'hour', 'sati', 'hours']:
+                return f"{int(time_value)} sat{'a' if time_value > 1 else ''}"
+            elif time_type in ['mesec', 'month', 'meseci', 'months']:
+                return f"{int(time_value)} mesec{'a' if time_value > 1 else ''}"
+            else:
+                return f"{int(time_value)} dan{'a' if time_value > 1 else ''}"
+        except:
+            return "2 dana"
+
     def group_products_by_sku(self, df):
         """Grupira proizvode po SKU i priprema strukturu za Remiks"""
         products_dict = {}
 
         for _, row in df.iterrows():
-            sku = str(row.get('SKU', '')).strip()
+            sku = str(self.safe_get_value(row, 'SKU', '')).strip()
             if not sku:
                 continue
 
-            size = str(row.get('SIZE', '')).strip()
-            qty = int(row.get('QTY', 0) or 0)
+            size = str(self.safe_get_value(row, 'SIZE', '')).strip()
+            qty = int(self.safe_get_value(row, 'QTY', 0) or 0)
 
             if sku not in products_dict:
                 # Kreiranje novog proizvoda
-                category = str(row.get('CATEGORY', ''))
-                product_name = str(row.get('NAME', ''))
+                category = str(self.safe_get_value(row, 'CATEGORY', ''))
+                product_name = str(self.safe_get_value(row, 'NAME', ''))
 
-                gender = self.map_gender_from_category(category)
-                product_category = self.map_product_category(category, product_name)
-                category_code = self.map_category_to_code(product_category, gender)
-                brand = self.extract_brand_from_name(row.get('BRAND'), product_name)
+                # NOVA LOGIKA - prvo proverava da li je kategorija već šifra
+                category_code, gender, product_category = self.get_category_code(category, product_name)
+
+                brand = self.extract_brand_from_name(self.safe_get_value(row, 'BRAND'), product_name)
 
                 # Procesuira slike
-                images_str = str(row.get('IMAGES', ''))
+                images_str = str(self.safe_get_value(row, 'IMAGES', ''))
                 images = [img.strip() for img in images_str.split(',') if img.strip()]
                 while len(images) < 4:
                     images.append('')
 
+                # Dobija sve dostupne kolone
+                ean = str(self.safe_get_value(row, 'EAN', ''))
+                variation_type = str(self.safe_get_value(row, 'VARIATION', 'SIZE'))
+                retail_price = float(self.safe_get_value(row, 'RETAIL_PRICE', 0) or 0)
+                special_price = float(self.safe_get_value(row, 'SPECIAL_PRICE', 0) or retail_price)
+                vat_symbol = str(self.safe_get_value(row, 'VAT_SYMBOL', 'Đ'))
+                vat = float(self.safe_get_value(row, 'VAT', 20))
+                weight = float(self.safe_get_value(row, 'WEIGHT', 0.2))
+
+                # Novo - dodajemo packing time info
+                packing_time = self.safe_get_value(row, 'PACKING_TIME', 2)
+                packing_time_type = self.safe_get_value(row, 'PACKING_TIME_TYPE', 'Dan')
+                packing_time_formatted = self.parse_packing_time(packing_time, packing_time_type)
+
+                # Novo - dodajemo nove kolone
+                unit_of_measure = str(self.safe_get_value(row, 'Jedinica mere', 'Kom'))
+                importer_name = str(self.safe_get_value(row, 'Poslovno ime uvoznika', ''))
+                manufacturer_name = str(self.safe_get_value(row, 'Poslovno ime proizvođača', ''))
+                country_of_origin = str(self.safe_get_value(row, 'Zemlja proizvodnje', ''))
+
+                # Opis može biti iz DESCRIPTION ili Opis kolone
+                description = str(self.safe_get_value(row, 'DESCRIPTION', ''))
+                if not description:
+                    description = str(self.safe_get_value(row, 'Opis', ''))
+
                 products_dict[sku] = {
                     'sku': sku,
+                    'ean': ean,  # NOVO
                     'gender': gender,
                     'product_name': product_name.replace('š', 's').replace('ž', 'z').replace('č', 'c').replace('ć',
                                                                                                                'c'),
                     'stock': {},
-                    'type': 'configurable' if str(row.get('TYPE', '')).lower() == 'configurabile' else 'simple',
-                    'net_retail_price': float(row.get('RETAIL_PRICE', 0) or 0),
-                    'active': 1,  # Assume all products are active
+                    'type': 'configurable' if str(
+                        self.safe_get_value(row, 'TYPE', '')).lower() == 'configurabile' else 'simple',
+                    'variation_type': variation_type,  # NOVO
+                    'net_retail_price': retail_price,
+                    'active': 1,
                     'brand': brand,
                     'category_code': category_code,
                     'product_category_name': product_category,
-                    'product_variation': 'size' if size else 'none',
+                    'product_variation': variation_type.lower() if variation_type else 'size',
                     'product_variations': [],
-                    'sale_price': float(row.get('SPECIAL_PRICE', 0) or row.get('RETAIL_PRICE', 0) or 0),
-                    'invoice_price': float(row.get('RETAIL_PRICE', 0) or 0) * 0.8333 * 0.82,
-                    'weight': str(row.get('WEIGHT', 0.2)),
-                    'vat': str(row.get('VAT', 20)),
-                    'vat symbol': str(row.get('VAT_SYMBOL', 'Đ')),
-                    'season': 'UNIVERZALNO',  # Default season
+                    'sale_price': special_price,
+                    'invoice_price': retail_price * 0.8333 * 0.8,
+                    'weight': str(weight),
+                    'vat': str(vat),
+                    'vat_symbol': vat_symbol,
+                    'season': 'UNIVERZALNO',
                     'images': images[:4],
-                    'description': str(row.get('DESCRIPTION', '')),
+                    'description': description,
+
+                    # NOVE KOLONE
+                    'packing_time': str(packing_time),
+                    'packing_time_type': str(packing_time_type),
+                    'packing_time_formatted': packing_time_formatted,
+                    'unit_of_measure': unit_of_measure,
+                    'importer_name': importer_name,
+                    'manufacturer_name': manufacturer_name,
+                    'country_of_origin': country_of_origin,
+
+                    # Dodatne info kolone
+                    'original_category': str(category),  # Čuva originalnu kategoriju
+                    'has_special_price': special_price > 0 and special_price != retail_price,
+                    'price_discount_percent': round(((retail_price - special_price) / retail_price * 100),
+                                                    2) if special_price > 0 and special_price != retail_price else 0,
                 }
 
             # Dodavanje veličina i zaliha
@@ -213,8 +370,10 @@ class ExcelToRemiks:
                 products_dict[sku]['product_variations'].append(size)
 
             if size:
-                warehouse_name = str(row.get('WAREHOUSE', '10-GLAVNI MAGACIN'))
-                products_dict[sku]['stock'][size] = {warehouse_name: qty}
+                warehouse_name = str(self.safe_get_value(row, 'WAREHOUSE', '10-GLAVNI MAGACIN'))
+                if size not in products_dict[sku]['stock']:
+                    products_dict[sku]['stock'][size] = {}
+                products_dict[sku]['stock'][size][warehouse_name] = qty
 
         return list(products_dict.values())
 
@@ -329,11 +488,17 @@ class ExcelToRemiks:
             sample = payload[0]
             print(f"\nPrimer pripremljenog proizvoda:")
             print(f"SKU: {sample['sku']}")
+            print(f"EAN: {sample.get('ean', 'N/A')}")
             print(f"Naziv: {sample['product_name'][:50]}...")
             print(f"Brend: {sample['brand']}")
-            print(f"Kategorija: {sample['product_category_name']} ({sample['category_code']})")
+            print(f"Originalna kategorija: {sample.get('original_category', 'N/A')}")
+            print(f"Mapirana kategorija: {sample['product_category_name']} ({sample['category_code']})")
+            print(f"Pol: {sample['gender']}")
             print(f"Veličine: {sample['product_variations']}")
             print(f"Stock: {sample['stock']}")
+            print(f"Vreme pakovanja: {sample.get('packing_time_formatted', 'N/A')}")
+            print(f"Zemlja proizvodnje: {sample.get('country_of_origin', 'N/A')}")
+            print(f"Uvoznik: {sample.get('importer_name', 'N/A')}")
 
         # Čuva payload
         self.save_json_payload(payload)
@@ -415,41 +580,181 @@ class ExcelToRemiks:
         print(f"Ukupno redova: {len(df)}")
         print(f"Ukupno kolona: {len(df.columns)}")
 
+        # Analizira dostupne kolone
+        available_columns = list(df.columns)
+        print(f"Dostupne kolone: {available_columns}")
+
         # Broj jedinstvenih SKU
         unique_skus = df['SKU'].nunique()
         print(f"Jedinstvenih SKU: {unique_skus}")
 
         # Broj jedinstvenih brendova
-        unique_brands = df['BRAND'].nunique()
-        print(f"Jedinstvenih brendova: {unique_brands}")
+        if 'BRAND' in df.columns:
+            unique_brands = df['BRAND'].nunique()
+            print(f"Jedinstvenih brendova: {unique_brands}")
 
         # Broj jedinstvenih kategorija
-        unique_categories = df['CATEGORY'].nunique()
-        print(f"Jedinstvenih kategorija: {unique_categories}")
+        if 'CATEGORY' in df.columns:
+            unique_categories = df['CATEGORY'].nunique()
+            print(f"Jedinstvenih kategorija: {unique_categories}")
 
         # Statistike o veličinama
-        unique_sizes = df['SIZE'].nunique()
-        print(f"Jedinstvenih veličina: {unique_sizes}")
+        if 'SIZE' in df.columns:
+            unique_sizes = df['SIZE'].nunique()
+            print(f"Jedinstvenih veličina: {unique_sizes}")
 
         # Ukupne zalihe
-        total_qty = df['QTY'].sum()
-        print(f"Ukupne zalihe: {total_qty}")
+        if 'QTY' in df.columns:
+            total_qty = df['QTY'].sum()
+            print(f"Ukupne zalihe: {total_qty}")
 
-        # Prikaz prvih nekoliko proizvoda
-        print(f"\nPrvih 5 SKU:")
-        for sku in df['SKU'].unique()[:5]:
+        # Analiza novih kolona
+        print(f"\n=== ANALIZA DODATNIH KOLONA ===")
+
+        # EAN kolona
+        if 'EAN' in df.columns:
+            ean_coverage = df['EAN'].notna().sum()
+            print(f"EAN kodovi popunjeni: {ean_coverage}/{len(df)} ({(ean_coverage / len(df) * 100):.1f}%)")
+
+        # Zemlja proizvodnje
+        if 'Zemlja proizvodnje' in df.columns:
+            country_coverage = df['Zemlja proizvodnje'].notna().sum()
+            unique_countries = df['Zemlja proizvodnje'].nunique()
+            print(
+                f"Zemlja proizvodnje popunjena: {country_coverage}/{len(df)} ({(country_coverage / len(df) * 100):.1f}%)")
+            print(f"Broj različitih zemalja: {unique_countries}")
+            if unique_countries > 0:
+                print(f"Zemlje: {list(df['Zemlja proizvodnje'].dropna().unique())}")
+
+        # Uvoznik
+        if 'Poslovno ime uvoznika' in df.columns:
+            importer_coverage = df['Poslovno ime uvoznika'].notna().sum()
+            unique_importers = df['Poslovno ime uvoznika'].nunique()
+            print(f"Uvoznik popunjen: {importer_coverage}/{len(df)} ({(importer_coverage / len(df) * 100):.1f}%)")
+            print(f"Broj različitih uvoznika: {unique_importers}")
+
+        # Vreme pakovanja
+        if 'PACKING_TIME' in df.columns:
+            packing_coverage = df['PACKING_TIME'].notna().sum()
+            avg_packing_time = df['PACKING_TIME'].mean()
+            print(
+                f"Vreme pakovanja popunjeno: {packing_coverage}/{len(df)} ({(packing_coverage / len(df) * 100):.1f}%)")
+            print(f"Prosečno vreme pakovanja: {avg_packing_time:.1f}")
+
+        # Jedinica mere
+        if 'Jedinica mere' in df.columns:
+            unit_coverage = df['Jedinica mere'].notna().sum()
+            unique_units = df['Jedinica mere'].nunique()
+            print(f"Jedinica mere popunjena: {unit_coverage}/{len(df)} ({(unit_coverage / len(df) * 100):.1f}%)")
+            if unique_units > 0:
+                print(f"Jedinice mere: {list(df['Jedinica mere'].dropna().unique())}")
+
+        print(f"\n=== ANALIZA KATEGORIJA ===")
+
+        if 'CATEGORY' in df.columns:
+            print(f"\nPrimeri kategorija iz Excel-a:")
+
+            # Grupiše kategorije po tipu
+            predefined_codes = []
+            text_categories = []
+
+            unique_categories = df['CATEGORY'].dropna().unique()
+
+            for cat in unique_categories[:10]:  # Prikazuje prvih 10
+                if self.is_predefined_category_code(cat):
+                    predefined_codes.append(str(cat))
+                else:
+                    text_categories.append(str(cat))
+
+            print(f"Predefinisane šifre kategorija ({len(predefined_codes)}):")
+            for code in predefined_codes:
+                category_name = self.map_code_to_category_name(code)
+                print(f"  • {code} → {category_name}")
+
+            print(f"\nTekstovne kategorije koje treba mapirati ({len(text_categories)}):")
+            for cat in text_categories:
+                # Test mapiranja
+                test_code, test_gender, test_name = self.get_category_code(cat, "test product")
+                print(f"  • '{cat}' → {test_code} ({test_name}, {test_gender})")
+
+        print(f"\n=== PRIMER PROIZVODA SA KATEGORIJAMA ===")
+        for sku in df['SKU'].unique()[:3]:
             sku_data = df[df['SKU'] == sku]
-            sizes = list(sku_data['SIZE'].values)
-            qtys = list(sku_data['QTY'].values)
-            print(f"  {sku}: veličine {sizes}, zalihe {qtys}")
+            category = sku_data['CATEGORY'].iloc[0] if 'CATEGORY' in df.columns else 'N/A'
+            name = sku_data['NAME'].iloc[0] if 'NAME' in df.columns else 'N/A'
+
+            # Testira mapiranje kategorije
+            if category != 'N/A':
+                mapped_code, mapped_gender, mapped_name = self.get_category_code(category, name)
+                print(f"  {sku}: '{category}' → {mapped_code} ({mapped_name}, {mapped_gender})")
+            else:
+                print(f"  {sku}: Nema kategoriju")
+
+    def compare_with_original_implementation(self, excel_file_path=None):
+        """Poredi originalne i nove kolone"""
+        print("=== POREĐENJE SA ORIGINALNOM IMPLEMENTACIJOM ===")
+
+        if excel_file_path is None:
+            excel_file_path = self.select_excel_file()
+            if not excel_file_path:
+                return
+
+        df = self.read_excel_file(excel_file_path)
+        if df is None:
+            return
+
+        # Kolone koje je originalna skripta koristila
+        original_columns = [
+            'SKU', 'SIZE', 'QTY', 'CATEGORY', 'NAME', 'TYPE',
+            'RETAIL_PRICE', 'SPECIAL_PRICE', 'BRAND', 'IMAGES',
+            'DESCRIPTION', 'WAREHOUSE', 'WEIGHT', 'VAT', 'VAT_SYMBOL'
+        ]
+
+        # Nove kolone koje dodajemo
+        new_columns = [
+            'EAN', 'VARIATION', 'PACKING_TIME', 'PACKING_TIME_TYPE',
+            'Jedinica mere', 'Poslovno ime uvoznika', 'Poslovno ime proizvođača',
+            'Zemlja proizvodnje', 'Opis'
+        ]
+
+        available_columns = list(df.columns)
+
+        print(f"\nKOLONE KOJE JE ORIGINALNA SKRIPTA KORISTILA:")
+        for col in original_columns:
+            status = "✓" if col in available_columns else "✗"
+            print(f"  {status} {col}")
+
+        print(f"\nNOVE KOLONE KOJE DODAJEMO:")
+        for col in new_columns:
+            status = "✓" if col in available_columns else "✗"
+            coverage = ""
+            if col in available_columns:
+                filled = df[col].notna().sum()
+                total = len(df)
+                coverage = f" ({filled}/{total} = {filled / total * 100:.1f}% popunjeno)"
+            print(f"  {status} {col}{coverage}")
+
+        print(f"\nKOLONE KOJE POSTOJE ALI SE NE KORISTE:")
+        unused_columns = [col for col in available_columns if col not in original_columns and col not in new_columns]
+        for col in unused_columns:
+            print(f"  • {col}")
+
+        # Generiše primer JSON-a sa svim podacima
+        if len(df) > 0:
+            print(f"\n=== PRIMER KOMPLETNOG JSON OBJEKTA ===")
+            products_array = self.group_products_by_sku(df.head(1))  # Samo prvi proizvod
+            if products_array:
+                sample_product = products_array[0]
+                print(json.dumps(sample_product, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
     # Kreiranje argument parser-a
-    parser = argparse.ArgumentParser(description='Excel to Remiks Sync Script')
+    parser = argparse.ArgumentParser(description='Excel to Remiks Sync Script - Improved Version')
     parser.add_argument('--file', '-f', type=str, help='Putanja do Excel fajla')
     parser.add_argument('--sync', '-s', action='store_true', help='Pokreni sinhronizaciju direktno')
     parser.add_argument('--analyze', '-a', action='store_true', help='Analiziraj Excel fajl')
+    parser.add_argument('--compare', '-c', action='store_true', help='Poredi sa originalnom implementacijom')
 
     args = parser.parse_args()
 
@@ -457,7 +762,7 @@ if __name__ == "__main__":
     sync = ExcelToRemiks()
 
     # Ako su prosledeni argumenti
-    if args.file or args.sync or args.analyze:
+    if args.file or args.sync or args.analyze or args.compare:
         excel_file = args.file
 
         # Ako nije specificiran fajl, pokušava sa default putanjom
@@ -481,18 +786,22 @@ if __name__ == "__main__":
         elif args.analyze:
             print(f"Analiza fajla: {excel_file}")
             sync.analyze_excel_file(excel_file)
+        elif args.compare:
+            print(f"Poređenje implementacije za fajl: {excel_file}")
+            sync.compare_with_original_implementation(excel_file)
         else:
             # Ako je samo specificiran fajl bez akcije, pokreni sync
             print(f"Pokretanje sinhronizacije sa fajlom: {excel_file}")
             sync.run_sync(excel_file)
     else:
         # Interaktivni meni ako nema argumenata
-        print("=== EXCEL TO REMIKS SYNC ===")
+        print("=== EXCEL TO REMIKS SYNC - IMPROVED VERSION ===")
         print("1. Analiziraj Excel fajl")
         print("2. Pokreni sinhronizaciju iz Excel fajla")
-        print("3. Exit")
+        print("3. Poredi sa originalnom implementacijom")
+        print("4. Exit")
 
-        choice = input("\nIzaberite opciju (1-3): ").strip()
+        choice = input("\nIzaberite opciju (1-4): ").strip()
 
         if choice == "1":
             # Analiza Excel fajla - automatski traži u podaci folderu
@@ -503,6 +812,10 @@ if __name__ == "__main__":
             sync.run_sync()
 
         elif choice == "3":
+            # Poređenje implementacija
+            sync.compare_with_original_implementation()
+
+        elif choice == "4":
             print("Izlaz...")
 
         else:
