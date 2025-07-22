@@ -341,13 +341,14 @@ class ExcelToRemiks:
                     'product_variation': variation_type.lower() if variation_type else 'size',
                     'product_variations': [],
                     'sale_price': special_price,
-                    'invoice_price': retail_price * 0.8333 * 0.8,
+                    'invoice_price': special_price * 0.8333 * 0.8,
                     'weight': str(weight),
                     'vat': str(vat),
                     'vat_symbol': vat_symbol,
                     'season': 'UNIVERZALNO',
                     'images': images[:4],
                     'description': description,
+                    'product_descritption': description,
 
                     # NOVE KOLONE
                     'packing_time': str(packing_time),
@@ -370,7 +371,7 @@ class ExcelToRemiks:
                 products_dict[sku]['product_variations'].append(size)
 
             if size:
-                warehouse_name = str(self.safe_get_value(row, 'WAREHOUSE', '10-GLAVNI MAGACIN'))
+                warehouse_name = str(self.safe_get_value(row, 'WAREHOUSE', 'Bambini-10-GLAVNI MAGACIN'))
                 if size not in products_dict[sku]['stock']:
                     products_dict[sku]['stock'][size] = {}
                 products_dict[sku]['stock'][size][warehouse_name] = qty

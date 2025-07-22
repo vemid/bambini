@@ -81,10 +81,11 @@ class ExcelToRemiksStock:
                 'GLAVNI MAGACIN': '01-GLAVNI MAGACIN',
                 'MAGACIN 1': '01-GLAVNI MAGACIN',
                 'MAGACIN 2': '02-SPOREDNI MAGACIN',
-                'MAGACIN 3': '03-OUTLET MAGACIN'
+                'MAGACIN 3': '03-OUTLET MAGACIN',
+                'Bambini-10-GLAVNI MAGACIN': 'Bambini-10-GLAVNI MAGACIN',
             }
 
-            warehouse = warehouse_mapping.get(warehouse_raw, '01-GLAVNI MAGACIN')
+            warehouse = warehouse_mapping.get(warehouse_raw, 'Bambini-10-GLAVNI MAGACIN')
 
             # Grupira po strukturi: stock_data[sku][size][warehouse] = qty
             if sku not in stock_data:
