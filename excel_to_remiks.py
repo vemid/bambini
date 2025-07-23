@@ -152,6 +152,15 @@ class ExcelToRemiks:
             '1006': 'JAKNE',
             '1007': 'SETOVI',
             '1099': 'OSTALO',
+            '1008': 'PAPUCE',
+            '1009': 'RANCEVI I TORBE',
+            '1010': 'CARAPE',
+            '1011': 'BOKSERICE',
+            '1012': 'BERMUDE',
+            '1013': 'KACKETI',
+            '1014': 'KAPE',
+            '1015': 'KUPACI',
+            '1016': 'PRSLUCI',
 
             # Ženske kategorije (2xxx)
             '2001': 'TRENERKE',
@@ -162,6 +171,7 @@ class ExcelToRemiks:
             '2006': 'JAKNE',
             '2007': 'SETOVI',
             '2099': 'TORBE',
+            '2008': 'HELANKE',
 
             # Unisex kategorije (3xxx)
             '3001': 'TRENERKE',
@@ -175,6 +185,8 @@ class ExcelToRemiks:
         }
 
         return code_mapping.get(category_code, 'OSTALO')
+
+    def map_category_to_code(self, category_name, gender):
         """Mapira kategoriju i pol u numerički kod - ista logika kao u originalnoj skripti"""
         category_mapping = {
             # Muške kategorije (1xxx)
@@ -186,7 +198,16 @@ class ExcelToRemiks:
                 'PANTALONE': '1005',
                 'JAKNE': '1006',
                 'SETOVI': '1007',
-                'OSTALO': '1099'
+                'OSTALO': '1099',
+                'PAPUCE': '1008',
+                'RANCEVI I TORBE': '1009',
+                'CARAPE': '1010',
+                'BOKSERICE': '1011',
+                'BERMUDE': '1012',
+                'KACKETI': '1013',
+                'KAPE': '1014',
+                'KUPACI': '1015',
+                'PRSLUCI': '1016',
             },
             # Ženske kategorije (2xxx)
             'F': {
@@ -197,7 +218,8 @@ class ExcelToRemiks:
                 'PANTALONE': '2005',
                 'JAKNE': '2006',
                 'SETOVI': '2007',
-                'TORBE': '2099'
+                'TORBE': '2099',
+                'HELANKE': '2008',
             },
             # Unisex kategorije (3xxx)
             'U': {
@@ -341,9 +363,9 @@ class ExcelToRemiks:
                     'product_variation': variation_type.lower() if variation_type else 'size',
                     'product_variations': [],
                     'sale_price': special_price,
-                    'invoice_price': special_price * 0.8333 * 0.8,
+                    'invoice_price': round(special_price * 0.8333 * 0.8, 2),
                     'weight': str(weight),
-                    'vat': str(vat),
+                    'vat': 20,
                     'vat_symbol': vat_symbol,
                     'season': 'UNIVERZALNO',
                     'images': images[:4],
@@ -351,19 +373,19 @@ class ExcelToRemiks:
                     'product_descritption': description,
 
                     # NOVE KOLONE
-                    'packing_time': str(packing_time),
-                    'packing_time_type': str(packing_time_type),
-                    'packing_time_formatted': packing_time_formatted,
-                    'unit_of_measure': unit_of_measure,
-                    'importer_name': importer_name,
-                    'manufacturer_name': manufacturer_name,
-                    'country_of_origin': country_of_origin,
+                    # 'packing_time': str(packing_time),
+                    # 'packing_time_type': str(packing_time_type),
+                    # 'packing_time_formatted': packing_time_formatted,
+                    # 'unit_of_measure': unit_of_measure,
+                    # 'importer_name': importer_name,
+                    # 'manufacturer_name': manufacturer_name,
+                    # 'country_of_origin': country_of_origin,
 
                     # Dodatne info kolone
-                    'original_category': str(category),  # Čuva originalnu kategoriju
-                    'has_special_price': special_price > 0 and special_price != retail_price,
-                    'price_discount_percent': round(((retail_price - special_price) / retail_price * 100),
-                                                    2) if special_price > 0 and special_price != retail_price else 0,
+                    # 'original_category': str(category),  # Čuva originalnu kategoriju
+                    # 'has_special_price': special_price > 0 and special_price != retail_price,
+                    # 'price_discount_percent': round(((retail_price - special_price) / retail_price * 100),
+                    #                                 2) if special_price > 0 and special_price != retail_price else 0,
                 }
 
             # Dodavanje veličina i zaliha

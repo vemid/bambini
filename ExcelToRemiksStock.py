@@ -55,7 +55,7 @@ class ExcelToRemiksStock:
 
             net_retail_price = round(retail , 0)
             sale_price = special if special > 0 else retail
-            invoice_price = round(sale_price / 1.2 * 0.8, 0)
+            invoice_price = round(sale_price / 1.2 * 0.8, 3)
 
             return net_retail_price, sale_price, invoice_price
         except:
@@ -85,7 +85,7 @@ class ExcelToRemiksStock:
                 'Bambini-10-GLAVNI MAGACIN': 'Bambini-10-GLAVNI MAGACIN',
             }
 
-            warehouse = warehouse_mapping.get(warehouse_raw, 'Bambini-10-GLAVNI MAGACIN')
+            warehouse = warehouse_mapping.get(warehouse_raw, 'Bambini-10-GLAVNI MAGACIN ')
 
             # Grupira po strukturi: stock_data[sku][size][warehouse] = qty
             if sku not in stock_data:
