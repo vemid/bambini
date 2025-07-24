@@ -303,6 +303,7 @@ class ExcelToRemiks:
 
             size = str(self.safe_get_value(row, 'SIZE', '')).strip()
             qty = int(self.safe_get_value(row, 'QTY', 0) or 0)
+            ean = str(self.safe_get_value(row, 'EAN', '')).strip()
 
             if sku not in products_dict:
                 # Kreiranje novog proizvoda
@@ -314,14 +315,15 @@ class ExcelToRemiks:
 
                 brand = self.extract_brand_from_name(self.safe_get_value(row, 'BRAND'), product_name)
 
-                # Procesuira slike
+                # Procesuira slike - NOVA LOGIKA: ne dodaje ako su prazne
                 images_str = str(self.safe_get_value(row, 'IMAGES', ''))
-                images = [img.strip() for img in images_str.split(',') if img.strip()]
-                while len(images) < 4:
-                    images.append('')
+                images = []
+                if images_str and images_str.strip():
+                    images = [img.strip() for img in images_str.split(',') if img.strip()]
+                    # Ograničava na maksimalno 4 slike
+                    images = images[:4]
 
                 # Dobija sve dostupne kolone
-                ean = str(self.safe_get_value(row, 'EAN', ''))
                 variation_type = str(self.safe_get_value(row, 'VARIATION', 'SIZE'))
                 retail_price = float(self.safe_get_value(row, 'RETAIL_PRICE', 0) or 0)
                 special_price = float(self.safe_get_value(row, 'SPECIAL_PRICE', 0) or retail_price)
@@ -345,16 +347,16 @@ class ExcelToRemiks:
                 if not description:
                     description = str(self.safe_get_value(row, 'Opis', ''))
 
-                products_dict[sku] = {
+                # Kreiranje osnovnog proizvoda
+                product_data = {
                     'sku': sku,
-                    'ean': ean,  # NOVO
                     'gender': gender,
                     'product_name': product_name.replace('š', 's').replace('ž', 'z').replace('č', 'c').replace('ć',
                                                                                                                'c'),
                     'stock': {},
                     'type': 'configurable' if str(
                         self.safe_get_value(row, 'TYPE', '')).lower() == 'configurabile' else 'simple',
-                    'variation_type': variation_type,  # NOVO
+                    'variation_type': variation_type,
                     'net_retail_price': retail_price,
                     'active': 1,
                     'brand': brand,
@@ -368,29 +370,24 @@ class ExcelToRemiks:
                     'vat': 20,
                     'vat_symbol': vat_symbol,
                     'season': 'UNIVERZALNO',
-                    'images': images[:4],
                     'description': description,
                     'product_descritption': description,
-
-                    # NOVE KOLONE
-                    # 'packing_time': str(packing_time),
-                    # 'packing_time_type': str(packing_time_type),
-                    # 'packing_time_formatted': packing_time_formatted,
-                    # 'unit_of_measure': unit_of_measure,
-                    # 'importer_name': importer_name,
-                    # 'manufacturer_name': manufacturer_name,
-                    # 'country_of_origin': country_of_origin,
-
-                    # Dodatne info kolone
-                    # 'original_category': str(category),  # Čuva originalnu kategoriju
-                    # 'has_special_price': special_price > 0 and special_price != retail_price,
-                    # 'price_discount_percent': round(((retail_price - special_price) / retail_price * 100),
-                    #                                 2) if special_price > 0 and special_price != retail_price else 0,
+                    'ean_codes': {}  # NOVO: Dictionary za EAN kodove po veličinama
                 }
+
+                # Dodaje images samo ako nisu prazne
+                if images:
+                    product_data['images'] = images
+
+                products_dict[sku] = product_data
 
             # Dodavanje veličina i zaliha
             if size and size not in products_dict[sku]['product_variations']:
                 products_dict[sku]['product_variations'].append(size)
+
+            # Dodavanje EAN koda za specifičnu veličinu
+            if size and ean:
+                products_dict[sku]['ean_codes'][size] = ean
 
             if size:
                 warehouse_name = str(self.safe_get_value(row, 'WAREHOUSE', 'Bambini-10-GLAVNI MAGACIN'))
@@ -398,7 +395,19 @@ class ExcelToRemiks:
                     products_dict[sku]['stock'][size] = {}
                 products_dict[sku]['stock'][size][warehouse_name] = qty
 
-        return list(products_dict.values())
+        # Finalizacija proizvoda - konvertuje ean_codes u finalni format
+        final_products = []
+        for product in products_dict.values():
+            # Konvertuje ean_codes dictionary u finalni oblik
+            if product['ean_codes']:
+                product['ean'] = product['ean_codes']
+
+            # Uklanja privremeni ean_codes
+            del product['ean_codes']
+
+            final_products.append(product)
+
+        return final_products
 
     def prepare_remiks_data(self, excel_file_path):
         """Priprema podatke iz Excel fajla za slanje na Remiks"""
@@ -514,14 +523,11 @@ class ExcelToRemiks:
             print(f"EAN: {sample.get('ean', 'N/A')}")
             print(f"Naziv: {sample['product_name'][:50]}...")
             print(f"Brend: {sample['brand']}")
-            print(f"Originalna kategorija: {sample.get('original_category', 'N/A')}")
             print(f"Mapirana kategorija: {sample['product_category_name']} ({sample['category_code']})")
             print(f"Pol: {sample['gender']}")
             print(f"Veličine: {sample['product_variations']}")
             print(f"Stock: {sample['stock']}")
-            print(f"Vreme pakovanja: {sample.get('packing_time_formatted', 'N/A')}")
-            print(f"Zemlja proizvodnje: {sample.get('country_of_origin', 'N/A')}")
-            print(f"Uvoznik: {sample.get('importer_name', 'N/A')}")
+            print(f"Images: {'DA' if 'images' in sample else 'NEMA'}")
 
         # Čuva payload
         self.save_json_payload(payload)
@@ -548,7 +554,9 @@ class ExcelToRemiks:
 
     def find_excel_files_in_data_folder(self):
         """Pronalazi sve Excel fajlove u 'podaci' folderu"""
-        data_folder = os.path.join(os.getcwd(), 'podaci')
+        # Koristi direktorijum gde se nalazi skripta umesto trenutni radni direktorijum
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        data_folder = os.path.join(script_dir, 'podaci')
         excel_files = []
 
         if os.path.exists(data_folder):
@@ -790,7 +798,9 @@ if __name__ == "__main__":
 
         # Ako nije specificiran fajl, pokušava sa default putanjom
         if not excel_file:
-            default_path = os.path.join('podaci', 'podaci.xlsx')
+            # Koristi apsolutnu putanju na osnovu lokacije skripte
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            default_path = os.path.join(script_dir, 'podaci', 'podaci.xlsx')
             if os.path.exists(default_path):
                 excel_file = default_path
                 print(f"Koristi se default fajl: {excel_file}")
