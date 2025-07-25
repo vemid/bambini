@@ -44,6 +44,8 @@ class ExcelToRemiks:
             return 'F'  # Žensko
         elif any(term in category_lower for term in ['unisex', 'baby', 'bebe', 'novorođenče']):
             return 'U'  # Unisex
+        elif any(term in category_lower for term in ['žene','ženska']):
+            return 'Z'  # Unisex
         else:
             return 'U'  # Default unisex
 
@@ -69,6 +71,8 @@ class ExcelToRemiks:
             return 'TRENERKE'
         elif any(term in category_lower for term in ['set', 'komplet']):
             return 'SETOVI'
+        elif any(term in category_lower for term in ['torba']):
+            return 'TORBE'
 
         # Ako nije pronađeno u kategoriji, traži u nazivu proizvoda
         elif any(term in product_name_lower for term in ['šorc', 'sorc', 'shorts', 'bermude']):
@@ -85,6 +89,8 @@ class ExcelToRemiks:
             return 'TRENERKE'
         elif any(term in product_name_lower for term in ['set', 'komplet']):
             return 'SETOVI'
+        elif any(term in product_name_lower for term in ['torbe', 'torba']):
+            return 'TORBE'
 
         print(f"Debug - kategorija nije prepoznata, koristi se OSTALO")
         return 'OSTALO'  # Default kategorija
