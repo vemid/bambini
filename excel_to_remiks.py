@@ -126,7 +126,7 @@ class ExcelToRemiks:
             elif first_digit == 2:
                 gender = 'F'
             elif first_digit == 3:
-                gender = 'U'
+                gender = 'Z'
             elif first_digit == 4:
                 gender = 'N'
             elif first_digit == 5:
