@@ -105,7 +105,7 @@ class ExcelToRemiks:
             if category_str.isdigit() and len(category_str) == 4:
                 # Proverava da li je u validnom opsegu šifara
                 code = int(category_str)
-                if (1000 <= code <= 1999) or (2000 <= code <= 2999) or (3000 <= code <= 3999):
+                if (1000 <= code <= 1999) or (2000 <= code <= 2999) or (3000 <= code <= 3999) or (4000 <= code <= 4999) or (5000 <= code <= 5999):
                     print(f"Debug - prepoznata predefinisana šifra kategorije: {category_str}")
                     return True
             return False
@@ -230,6 +230,9 @@ class ExcelToRemiks:
                 'SETOVI': '2007',
                 'TORBE': '5001',
                 'HELANKE': '2008',
+            },
+            'Z': {
+                'TORBE': '5001',
             },
             # Unisex kategorije (3xxx)
             'U': {
