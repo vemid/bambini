@@ -121,6 +121,10 @@ class ExcelToRemiks:
                 gender = 'F'
             elif first_digit == 3:
                 gender = 'U'
+            elif first_digit == 4:
+                gender = 'N'
+            elif first_digit == 5:
+                gender = 'Z'
             else:
                 gender = 'U'  # Default
 
@@ -170,7 +174,7 @@ class ExcelToRemiks:
             '2005': 'PANTALONE',
             '2006': 'JAKNE',
             '2007': 'SETOVI',
-            '2099': 'TORBE',
+            '5001': 'TORBE',
             '2008': 'HELANKE',
 
             # Unisex kategorije (3xxx)
@@ -218,7 +222,7 @@ class ExcelToRemiks:
                 'PANTALONE': '2005',
                 'JAKNE': '2006',
                 'SETOVI': '2007',
-                'TORBE': '2099',
+                'TORBE': '5001',
                 'HELANKE': '2008',
             },
             # Unisex kategorije (3xxx)
